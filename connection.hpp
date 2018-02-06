@@ -4,10 +4,12 @@
 
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include <array>
-#include <cstddef>
+#include <cstdint>
 #include <system_error>
+#include <vector>
 
 
 // An accept()ed connection.
@@ -17,7 +19,7 @@ class connection {
 
 
   int _socket_fd; // Fd for this end
-  std::array<std::byte, buffer_size> _recv_buffer; // The buffer filled by recv()
+  std::array<uint8_t, buffer_size> _recv_buffer; // The buffer filled by recv()
 
 
 public:
@@ -30,7 +32,7 @@ public:
   
   // Cleanup: close the connection.
   ~connection() {
-    close(_socket_fd);
+    ::close(_socket_fd);
   }
 
 
@@ -44,16 +46,23 @@ public:
 
   // Receive some stuff.
   // XXX: Blocking receive.
-  std::vector<std::byte> receive() {
+  std::vector<uint8_t> receive() {
     // TODO: error checking
-    recv(_socket_fd,_recv_buffer.data(), buffer_size, 0);
+    auto retcode = recv(_socket_fd, _recv_buffer.data(), buffer_size, 0);
+
+    if (retcode < 0) {
+      // FIXME: TODO
+    }
+
+    return std::vector<uint8_t>{
+      _recv_buffer.cbegin(), _recv_buffer.cbegin() + retcode};
   }
 
 
   // Send some stuff.
-  void send(std::vector<std::byte> const& msg) {
+  void send(std::vector<uint8_t> const& msg) {
     // TODO: error checking
-    send(_socket_fd, msg.data(), msg.size(), 0);
+    ::send(_socket_fd, msg.data(), msg.size(), 0);
   }
 
 };
