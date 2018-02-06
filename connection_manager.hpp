@@ -5,7 +5,12 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+#include <cerrno>
+#include <memory>
 #include <system_error>
+#include <utility>
+
+#include "connection.hpp"
 
 
 // A connection manager; sets up the listening socket, listens, and closes
@@ -21,13 +26,9 @@ public:
 
   // Setup a socket and bind to the given address.
   connection_manager(Service& service) : _service{service} {
-    // The number of connections is set statically, so might as well reserve
-    _connections.reserve(MaxConnections) // FIXME: probably unnecessary
-
-
     // Setup a socket
-    if (_listening_socket_fd = socket() < 0) {
-      throw std::system_error(errno, std::generic_category);
+    if ((_listening_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+      throw std::system_error(errno, std::generic_category());
     }
 
     // Bind an address to it
@@ -41,12 +42,12 @@ public:
 
 
   // Start accepting connections and handling them one at a time
-  void [[noreturn]] start() {
+  [[noreturn]] void start() {
     int accepted; // An accepted connection
     while (true) {
       if ((accepted = accept(_listening_socket_fd, NULL, NULL)) < 0) {
         // FIXME: this may be an overreaction, but...
-        throw std::system_error(errno, std::generic_category);
+        throw std::system_error(errno, std::generic_category());
       }
       
 
