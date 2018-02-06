@@ -1,6 +1,7 @@
 #ifndef SERVICE_HPP
 #define SERVICE_HPP
 
+#include <vector>
 
 #include "connection.hpp"
 

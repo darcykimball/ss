@@ -5,15 +5,20 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
+#include <array>
+#include <cstddef>
 #include <system_error>
 
 
 // An accept()ed connection.
-template <size_t BufferSize = 8192> // FIXME: sanity check
 class connection {
 
+  static constexpr size_t buffer_size = 4096;
+
+
   int _socket_fd; // Fd for this end
-  std::array<std::byte, BufferSize> _recv_buffer; // The buffer filled by recv()
+  std::array<std::byte, buffer_size> _recv_buffer; // The buffer filled by recv()
+
 
 public:
 
@@ -41,7 +46,7 @@ public:
   // XXX: Blocking receive.
   std::vector<std::byte> receive() {
     // TODO: error checking
-    recv(_socket_fd,_recv_buffer.data(), BufferSize, 0);
+    recv(_socket_fd,_recv_buffer.data(), buffer_size, 0);
   }
 
 

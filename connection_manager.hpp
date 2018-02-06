@@ -15,7 +15,6 @@
 template <typename Service, size_t MaxConnections = 10> // FIXME sanity check
 class connection_manager {
   int _listening_socket_fd;
-  std::vector<connection> _connections; // Managed set; initially 0
   Service& _service; // Non-owning reference to a service
 
 public:
@@ -51,12 +50,8 @@ public:
       }
       
 
-      // Add a new connection
-      _connections.emplace_back(accepted); 
-
-
-      // Do what needs to be done
-      _service.serve(_connections);
+      // Create a new connection and hand it off
+      _service.serve(std::make_unique<connection>(accepted));
     }    
   }  
 };
