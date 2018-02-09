@@ -37,7 +37,7 @@ public:
 
 
   // XXX: Connections imply system resources, so to keep it simple, disallow
-  // value semantics.
+  // value/move semantics.
   connection(connection const&) = delete;
   connection(connection&&) = delete; 
   connection& operator=(connection const&) = delete;
