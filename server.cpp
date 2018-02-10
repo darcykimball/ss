@@ -1,6 +1,10 @@
 #include <cstdlib>
+#include <filesystem>
 #include <iostream>
 #include <sstream>
+
+#include "connection_manager.hpp"
+#include "service.hpp"
 
 
 int main(int argc, char** argv) { 
@@ -20,6 +24,9 @@ int main(int argc, char** argv) {
   }
 
 
+  if (!std::filesystem::directory
+
+
   uint16_t port_no;
   if (!(std::istringstream{argv[4]} >> port_no)) {
     std::cerr << "Error parsing port_no!\n";
@@ -28,6 +35,7 @@ int main(int argc, char** argv) {
 
 
   std::cout << "Starting server on port " << port_no << "...\n";
+
 
 
   return EXIT_SUCCESS;
