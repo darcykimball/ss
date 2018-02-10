@@ -45,6 +45,7 @@ public:
   connection_manager(Service& service, uint16_t port_no) : _service{service} {
     // Setup a socket
     if ((_listening_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+      std::cerr << "connection_manager: failed to setup socket!\n"; 
       throw_errno();
     }
 
@@ -57,13 +58,15 @@ public:
     }; 
       
     if (bind(_listening_socket_fd, reinterpret_cast<sockaddr*>(&addr),
-      sizeof(sockaddr_in) < 0)) {
+      sizeof(sockaddr_in)) < 0) {
+      std::cerr << "connection_manager: failed to bind addr to socket!\n"; 
       throw_errno();
     }
 
 
     // Mark the socket as listening
     if (listen(_listening_socket_fd, MaxConnections) < 0) {
+      std::cerr << "connection_manager: failed to listen on socket!\n"; 
       throw_errno();
     }
   }
@@ -72,9 +75,12 @@ public:
   // Start accepting connections and handling them one at a time
   [[noreturn]] void start() {
     int accepted; // An accepted connection
+
+
     while (true) {
       if ((accepted = accept(_listening_socket_fd, NULL, NULL)) < 0) {
         // FIXME: this may be an overreaction, but...
+        std::cerr << "connection_manager: failed to accept connection!\n"; 
         throw_errno();
       }
       

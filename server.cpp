@@ -1,5 +1,5 @@
 #include <cstdlib>
-#include <filesystem>
+//#include <filesystem> // FIXME
 #include <iostream>
 #include <sstream>
 
@@ -24,7 +24,8 @@ int main(int argc, char** argv) {
   }
 
 
-  if (!std::filesystem::directory
+  // TODO: validate directory path
+  //if (!std::filesystem::directory
 
 
   uint16_t port_no;
@@ -35,6 +36,20 @@ int main(int argc, char** argv) {
 
 
   std::cout << "Starting server on port " << port_no << "...\n";
+
+
+  // FIXME: remove!!
+  auto echo_function = [](auto bytes) {
+    return bytes;
+  };
+
+  using service_type = threaded_service<decltype(echo_function)>;
+  service_type echo_service{echo_function};
+
+  connection_manager<service_type> manager{echo_service, port_no};
+
+  manager.start();
+    
 
 
 
