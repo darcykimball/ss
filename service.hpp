@@ -19,35 +19,44 @@ class threaded_service {
 
 public:
 
+  using conn_ptr = std::unique_ptr<connection>;
+  
+  // The type of promise sent back to the main thread
+  using promise_back = std::promise<std::exception_ptr>;
+  using future_back = std::future<std::exception_ptr>;
+
+
   threaded_service(Function function) : _function(function) {}
 
 
   // Service all connections (in whatever way specified) and destroy
   // connections when necessary.
   // Returns a future to contain an exception to signal if anything went wrong.
-  std::future<std::exception_ptr> serve(std::unique_ptr<connection> conn) {
+  future_back serve(conn_ptr conn) {
     // For propagating exceptions back to main thread
-    std::promise<std::exception_ptr> exception_promise;
+    promise_back exception_promise;
     auto exception_future = exception_promise.get_future();
 
 
     // TODO: check ref/move semantics for sanity
     // TODO: exception handling!!!
     std::thread worker{
-      [this, &conn](auto&& c, auto&& p) {
+      [this, c{std::move(conn)}, p{std::move(exception_promise)}]() mutable {
         std::exception_ptr eptr;
 
+        if constexpr (DEBUG) {
+          std::cerr << "service::serve: worker started here.\n";
+        }
+
         try {
-          auto msg = conn->receive();
-          conn->send(_function(msg));
+          auto msg = c->receive();
+          c->send(_function(msg));
         } catch (...) {
           eptr = std::current_exception();
         }
 
         p.set_value(eptr);
-      },
-      std::move(conn),
-      std::move(exception_promise)
+      }
     };
 
 

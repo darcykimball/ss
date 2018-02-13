@@ -49,7 +49,7 @@ public:
     sockaddr_in addr = { 
       .sin_family = AF_INET,
       .sin_port = htons(port_no),
-      .sin_addr = INADDR_ANY
+      .sin_addr = {htonl(INADDR_ANY)}
     }; 
       
     if (bind(_listening_socket_fd, reinterpret_cast<sockaddr*>(&addr),
@@ -110,8 +110,8 @@ public:
               return true;
 
             case std::future_status::timeout:
-              std::cerr << "A thread timed out\n";
-              return true;
+              std::cerr << "A thread is still working...\n";
+              return false;
 
             // A no-op
             case std::future_status::deferred:
