@@ -51,9 +51,11 @@ public:
     };
 
 
-    // FIXME: ???
-    //worker.detach();
-    
+    // Go forth
+    if (worker.joinable()) {
+      worker.detach();
+    }
+
 
     return exception_future;
   }

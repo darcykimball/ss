@@ -11,6 +11,8 @@
 #include <system_error>
 #include <vector>
 
+#include "util.hpp"
+
 
 // An accept()ed connection.
 class connection {
@@ -47,11 +49,11 @@ public:
   // Receive some stuff.
   // XXX: Blocking receive.
   std::vector<uint8_t> receive() {
-    // TODO: error checking
     auto retcode = recv(_socket_fd, _recv_buffer.data(), buffer_size, 0);
 
     if (retcode < 0) {
-      // FIXME: TODO
+      std::cerr << "connection::receive(): failed to recv():\n";
+      util::throw_errno();
     }
 
     return std::vector<uint8_t>{
@@ -61,8 +63,12 @@ public:
 
   // Send some stuff.
   void send(std::vector<uint8_t> const& msg) {
-    // TODO: error checking
-    ::send(_socket_fd, msg.data(), msg.size(), 0);
+    auto retcode = ::send(_socket_fd, msg.data(), msg.size(), 0);
+
+    if (retcode < 0) {
+      std::cerr << "connection::send(): failed to send():\n";
+      util::throw_errno();
+    }
   }
 
 };

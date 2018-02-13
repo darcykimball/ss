@@ -48,6 +48,7 @@ int main(int argc, char** argv) {
 
   connection_manager<service_type> manager{echo_service, port_no};
 
+  std::cout << "Starting to listen for connections...\n";
   manager.start();
     
 

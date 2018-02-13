@@ -1,6 +1,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h>
+#include <unistd.h>
 
 #include <cstdint>
 #include <cstdlib>
@@ -120,6 +121,9 @@ int main(int argc, char** argv) {
         std::cout << "Received reply:\n";
         std::cout << reinterpret_cast<char const*>(recv_buf.data());
         std::cout << '\n';
+
+
+        close(socket_fd);
       }
     }
   };

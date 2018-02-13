@@ -2,6 +2,11 @@
 #define CONNECTION_MANAGER_HPP
 
 
+#ifndef DEBUG
+#define DEBUG 1
+#endif
+
+
 #include <netinet/ip.h>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -15,17 +20,7 @@
 #include <utility>
 
 #include "connection.hpp"
-
-
-namespace {
-
-// Helper for error-handling
-void throw_errno() {
-  throw std::system_error(errno, std::generic_category());
-}
-
-} // namespace
-
+#include "util.hpp"
 
 
 // A connection manager; sets up the listening socket, listens, and closes
@@ -46,7 +41,7 @@ public:
     // Setup a socket
     if ((_listening_socket_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
       std::cerr << "connection_manager: failed to setup socket!\n"; 
-      throw_errno();
+      util::throw_errno();
     }
 
 
@@ -60,20 +55,25 @@ public:
     if (bind(_listening_socket_fd, reinterpret_cast<sockaddr*>(&addr),
       sizeof(sockaddr_in)) < 0) {
       std::cerr << "connection_manager: failed to bind addr to socket!\n"; 
-      throw_errno();
+      util::throw_errno();
     }
 
 
     // Mark the socket as listening
     if (listen(_listening_socket_fd, MaxConnections) < 0) {
       std::cerr << "connection_manager: failed to listen on socket!\n"; 
-      throw_errno();
+      util::throw_errno();
     }
   }
 
 
   // Start accepting connections and handling them one at a time
-  [[noreturn]] void start() {
+  void start() {
+    if constexpr (DEBUG) {
+      std::cerr << "connection_manager::start()\n";
+    }
+
+
     int accepted; // An accepted connection
 
 
@@ -81,7 +81,7 @@ public:
       if ((accepted = accept(_listening_socket_fd, NULL, NULL)) < 0) {
         // FIXME: this may be an overreaction, but...
         std::cerr << "connection_manager: failed to accept connection!\n"; 
-        throw_errno();
+        util::throw_errno();
       }
       
 
