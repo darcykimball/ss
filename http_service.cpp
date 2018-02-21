@@ -24,9 +24,10 @@ std::vector<uint8_t> http_service(fetcher& fido, std::vector<uint8_t> raw_req) {
 
   // Pack the contents in
   // XXX: horribly inefficient, but then, wouldn't be passing vector values...
+  // FIXME: use iterators??
   auto size = file_size(file_path);
   std::vector<uint8_t> resource{size};
-  ifstream file{file_path, std::ios::binary};
+  ifstream file{file_path, std::ios::in | std::ios::binary};
   file.read(resource.data(), size);
 
 

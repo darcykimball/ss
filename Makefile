@@ -16,6 +16,9 @@ client: client.cpp
 parser.o: parser.cpp parser.hpp
 	$(CXX) $(CXXFLAGS) -c parser.cpp
 
+test_parser: parser.o test_parser.cpp
+	$(CXX) $(CXXFLAGS) -o test_parser test_parser.cpp -lboost_system parser.o
+
 clean:
 	rm -rf *.o $(EXES) *.gch
 

@@ -11,7 +11,7 @@ namespace http {
 
 
 struct parse_error : std::runtime_error {
-  parse_error() : std::runtime_error{"HTTP parse error!"} {}
+  parse_error(std::string const& msg) : std::runtime_error{msg} {}
 };
 
 

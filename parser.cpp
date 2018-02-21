@@ -32,7 +32,7 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
      || tokens[0] != "GET"s // Is this a GET?
      || (tokens[2] != "HTTP/1.0" && tokens[2] != "HTTP/1.1"s) // Supported ver.?
     ) {
-      throw parse_error{};
+      throw parse_error{"Malformed req line"};
     }
 
     // Alright so far.
@@ -41,7 +41,7 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
 
   } else {
     // Can't be right.
-    throw parse_error{};
+    throw parse_error{"No request line"};
   }
 
   
@@ -51,13 +51,14 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
     if (line.length() == 0) {
       break;
     }
+    std::cout << "This is the line:" << line << '\n';
 
     // Split type and value
     auto split_pos = line.find(':');
 
     // Error if no colon-delimited pair found
     if (split_pos == std::string::npos) {
-      throw parse_error{};
+      throw parse_error{"Bad header"};
     }
 
 
