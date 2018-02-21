@@ -1,0 +1,37 @@
+#include <vector>
+
+#include <boost/filesystem.hpp>
+
+#include "http_service.hpp"
+#include "fetcher.hpp"
+#include "parser.hpp"
+
+
+namespace http {
+
+
+using namespace boost::filesystem;
+
+
+std::vector<uint8_t> http_service(fetcher& fido, std::vector<uint8_t> raw_req) {
+  // Parse the raw_req
+  // TODO
+  
+
+  // Try to find the resource
+  auto file_path = fido.fetch(res_path);
+
+
+  // Pack the contents in
+  // XXX: horribly inefficient, but then, wouldn't be passing vector values...
+  auto size = file_size(file_path);
+  std::vector<uint8_t> resource{size};
+  ifstream file{file_path, std::ios::binary};
+  file.read(resource.data(), size);
+
+
+  return resource;
+}
+
+
+} // namespace http
