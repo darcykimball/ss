@@ -33,7 +33,6 @@ class fetcher {
   /// FIXME: Abs or rel??
   path const _root; // Path to root directory
 
-
 public:
   
   fetcher(std::string const& root_path) : _root(root_path) {
@@ -54,7 +53,7 @@ public:
 
   // Fetch a resource based on relative path
   // Throws an exception if couldn't fetch resource for whatever reason
-  std::unique_ptr<ifstream> fetch(path rel_path) {
+  path fetch(path rel_path) {
     // Make path wrt root  
     path abs_path{_root};
     abs_path /= rel_path;
@@ -78,10 +77,8 @@ public:
     }
 
 
-    return std::make_unique<ifstream>(abs_path);
+    return abs_path;
   }
-
-
 
 };
 

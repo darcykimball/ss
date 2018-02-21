@@ -17,7 +17,7 @@
 // An accept()ed connection.
 class connection {
 
-  static constexpr size_t buffer_size = 4096;
+  static constexpr size_t buffer_size = 8192;
 
 
   int _socket_fd; // Fd for this end

@@ -53,7 +53,7 @@ struct request {
 struct response {
 
   status_code code;
-  std::vector<header> headers;
+  std::vector<header> headers; // XXX: only date, content-type, and content-len
   std::unique_ptr<ifstream> entity; // A handle to the resource to send
 
 };

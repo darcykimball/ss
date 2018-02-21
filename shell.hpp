@@ -97,6 +97,10 @@ public:
       (found->second)(tokens);
       std::cout << prompt_string;
     }
+
+    
+    // For prettiness
+    std::cout << '\n';
   }
 };
 
