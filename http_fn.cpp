@@ -13,7 +13,7 @@ namespace http {
 using namespace boost::filesystem;
 
 
-std::vector<uint8_t> http_service(fetcher& fido, std::vector<uint8_t> raw_req) {
+std::vector<uint8_t> http_fn(fetcher& fido, std::vector<uint8_t> raw_req) {
   // Parse the raw_req
   auto req = parse_request(raw_req);
   

@@ -22,6 +22,7 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
 
 
   // Parse request line
+  // TODO/FIXME: if empty uri, treat as index.html
   std::string line;
   if (std::getline(iss, line)) {
     auto tokens = util::tokenize(line);

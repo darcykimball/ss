@@ -13,7 +13,7 @@
 namespace http {
 
 
-std::vector<uint8_t> http_service(fetcher& fido, std::vector<uint8_t> raw_req);
+std::vector<uint8_t> http_fn(fetcher& fido, std::vector<uint8_t> raw_req);
 
 
 } // namespace http

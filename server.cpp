@@ -1,7 +1,9 @@
 #include <cstdlib>
-//#include <filesystem> // FIXME
 #include <iostream>
 #include <sstream>
+#include <utility>
+
+#include <boost/filesystem.hpp>
 
 #include "connection_manager.hpp"
 #include "service.hpp"
@@ -9,6 +11,7 @@
 
 int main(int argc, char** argv) { 
   using namespace std::literals;
+  using namespace boost::filesystem;
 
 
   auto print_usage = [prog_name = argv[0]]() {
@@ -24,10 +27,6 @@ int main(int argc, char** argv) {
   }
 
 
-  // TODO: validate directory path
-  //if (!std::filesystem::directory
-
-
   uint16_t port_no;
   if (!(std::istringstream{argv[4]} >> port_no)) {
     std::cerr << "Error parsing port_no!\n";
@@ -38,21 +37,21 @@ int main(int argc, char** argv) {
   std::cout << "Starting server on port " << port_no << "...\n";
 
 
-  // FIXME: remove!!
-  auto echo_function = [](auto bytes) {
-    return bytes;
+  // Setup the service
+  http::fetcher fido{argv[2]}; // The file finder/fetcher
+  auto serve_http_fn = [&fido](auto&& bytes) {
+    return http::http_fn(fido, std::forward<decltype(bytes)>(bytes));
   };
 
-  using service_type = threaded_service<decltype(echo_function)>;
-  service_type echo_service{echo_function};
 
-  connection_manager<service_type> manager{echo_service, port_no};
+  using service_type = threaded_service<decltype(serve_http_fn)>;
+  service_type http_service{serve_http_fn};
+
+  connection_manager<service_type> manager{http_service, port_no};
 
   std::cout << "Starting to listen for connections...\n";
   manager.start();
     
-
-
 
   return EXIT_SUCCESS;
 }
