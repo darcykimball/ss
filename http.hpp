@@ -3,6 +3,7 @@
 
 
 #include <fstream>
+#include <map>
 #include <memory>
 #include <vector>
 
@@ -25,26 +26,30 @@ enum class status_code {
 };
 
 
-// A dumb type to store header info
-struct header {
-  std::string type;
-  std::string value;
-};
+// Dumb type aliases for header types
+using header_type = std::string;
+using header_value = std::string;
+
+
+// Some useful header-related constants
+constexpr auto content_type_key = "Content-Type";
+constexpr auto content_length_key= "Content-Length";
+constexpr auto content_date_key = "Date";
 
 
 // A minimal HTTP request
 struct request {
 
-  enum class rtype {
+  enum class method {
     GET,
     PUT, // TODO
     HEAD // TODO
   };
 
 
-  rtype type;
+  method type;
   std::string uri;
-  std::vector<header> headers;
+  std::map<header_type, header_value> headers;
 
 };
 
@@ -53,8 +58,8 @@ struct request {
 struct response {
 
   status_code code;
-  std::vector<header> headers; // XXX: only date, content-type, and content-len
-  std::unique_ptr<ifstream> entity; // A handle to the resource to send
+  std::map<header_type, header_value> headers; // XXX: only date, content-type, and content-len
+  std::vector<uint8_t> entity; // Entity-body
 
 };
 

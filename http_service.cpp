@@ -15,7 +15,7 @@ using namespace boost::filesystem;
 
 std::vector<uint8_t> http_service(fetcher& fido, std::vector<uint8_t> raw_req) {
   // Parse the raw_req
-  // TODO
+  auto req = parse_request(raw_req);
   
 
   // Try to find the resource

@@ -10,29 +10,7 @@
 #include <map>
 #include <vector>
 
-
-namespace {
-
-
-// Helper for tokenizing a line
-std::vector<std::string> tokenize(std::string const& str) {
-  std::istringstream iss{str};
-  std::vector<std::string> tokens;
-
-  std::for_each(
-    std::istream_iterator<std::string>{iss},
-    std::istream_iterator<std::string>{},
-    [&tokens](auto&& s) {
-      tokens.push_back(s);
-    }
-  );
-            
-
-  return tokens;
-}
-
-
-} // namespace
+#include "util.hpp"
 
 
 namespace cli {
@@ -77,7 +55,7 @@ public:
     std::string input;
     while (std::getline(_input_stream, input)) {
       // Tokenize/check for command
-      auto tokens = tokenize(input);
+      auto tokens = util::tokenize(input);
 
       if (tokens.size() == 0) {
         // Ignore whitespace lines

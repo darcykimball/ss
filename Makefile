@@ -13,6 +13,8 @@ server: server.cpp
 client: client.cpp
 	$(CXX) $(CXXFLAGS) -o client client.cpp
 
+parser.o: parser.cpp parser.hpp
+	$(CXX) $(CXXFLAGS) -c parser.cpp
 
 clean:
 	rm -rf *.o $(EXES) *.gch
