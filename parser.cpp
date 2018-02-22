@@ -56,6 +56,11 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
     throw parse_error{"No request line"};
   }
 
+
+  if (!iss) {
+    throw parse_error{"Premature eof"};
+  }
+
   
   // Parse headers
   while (std::getline(iss, line)) {
