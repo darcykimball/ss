@@ -64,7 +64,6 @@ public:
     std::cout << "current_path = " << current_path() << '\n';
     std::cout << "exists? = " << exists(abs_path) << '\n';
     std::cout << "is_reg_file? = " << is_regular_file(abs_path) << '\n';
-    std::cout << "filesize = " << file_size(abs_path) << '\n';
 
     try {
       // Check existence of resource

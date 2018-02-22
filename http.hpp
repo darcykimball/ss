@@ -75,7 +75,51 @@ struct response {
 
   status_code code;
   std::map<header_type, header_value> headers; // XXX: only date, content-type, and content-len
-  std::vector<uint8_t> entity; // Entity-body
+
+  
+  // Form a proper response
+  std::vector<uint8_t> as_bytes(std::vector<uint8_t> const* entity) const {
+    std::string status_line{"HTTP/1.0 "}; // To build status line
+
+    // Append status code and explanation
+    status_line += print_code(code);
+    status_line += '\n';
+
+
+    // The raw response
+    std::vector<uint8_t> bytes{status_line.cbegin(), status_line.cend()};
+
+    // Add headers
+    for (auto const& h : headers) {
+      std::string header_line{h.first};
+      header_line.append(": ").append(h.second).append("\n");
+      bytes.insert(bytes.end(), header_line.cbegin(), header_line.cend());
+    }
+   
+    // XXX: gotcha
+    bytes.push_back('\n');
+    
+
+    switch (code) {
+      case status_code::ok:
+        // Append entity body
+        if (entity != nullptr) {
+          bytes.insert(bytes.end(), entity->cbegin(), entity->cend());
+          break;
+        }
+        
+      case status_code::forbidden:
+      case status_code::not_found:
+      case status_code::internal_server_error:
+      default:
+        // If we reached here, we should send an error response
+        break;
+    }   
+
+
+    return bytes;
+  }
+  
 
 };
 
