@@ -1,0 +1,35 @@
+Compiling:
+
+Use the Makefile and edit as needed; a (mostly) c++17 compliant compiler will work. The only other dependency is Boost.Filesystem, which is packaged with the typical libboost package.
+
+
+Source code:
+
+For the most part, documentation is inline and informal; some important notes are marked with 'XXX:'. Header files should contain function-grained documentation where necessary.
+
+The full source repo should be at https://github.com/darcykimball/ss.
+
+
+Test cases:
+
+Screenshots are provided in screenshots/, and hopefully have self-explanatory names. The dummy resources are in the resources/ directory.
+
+To test permissions errors, I did something like
+
+# touch resources/cant_touch_this
+# chmod -r resources/cant_touch_this
+
+...as root. I can't upload such a file, since, well, I don't have the permissions either.
+
+I also included a script, 'error_cases.sh', which demonstrates 2 dumb cases not covered by the screenshots.
+
+
+MISC:
+
+There's a lot of server-side debug output.
+
+Logically http-pertaining stuff is under the namespace http.
+
+I used the spawn-a-thread for each request approach.
+
+Sorry for using C++.
