@@ -31,15 +31,14 @@ struct fetch_error : std::runtime_error {
 class fetcher {
 
   /// FIXME: Abs or rel??
-  path const _root; // Path to root directory
+  path _root; // Path to root directory
 
 public:
   
   fetcher(std::string const& root_path) : _root(root_path) {
     try {
-      // TODO check that it's a directory
+      // Check that it's a directory
       if (!exists(_root) || !is_directory(_root)) {
-        // TODO: throw user exception
         throw fetch_error{"Root directory not found!"s};
       }
 
@@ -48,6 +47,8 @@ public:
       std::cerr << "fetcher(): " << e.what() << '\n';
       throw fetch_error{status_code::internal_server_error};
     }
+
+    _root = canonical(_root);
   }
 
 
@@ -59,17 +60,24 @@ public:
     abs_path /= rel_path;
 
 
+    std::cout << "fetcher::fetch(): trying to fetch " << abs_path << '\n';
+    std::cout << "current_path = " << current_path() << '\n';
+    std::cout << "exists? = " << exists(abs_path) << '\n';
+    std::cout << "is_reg_file? = " << is_regular_file(abs_path) << '\n';
+    std::cout << "filesize = " << file_size(abs_path) << '\n';
+
     try {
       // Check existence of resource
-      if (!exists(rel_path) || !is_regular_file(rel_path)) {
+      if (!exists(abs_path)) {
         throw fetch_error{status_code::not_found};
       } 
       
       // Check permissions
       // TODO/FIXME
-      if (true) {
+      if (!is_regular_file(abs_path)) {
         throw fetch_error{status_code::forbidden};
       }
+
     } catch (filesystem_error const& e) {
       // Something went horribly wrong on our end
       std::cerr << "fetcher::fetch(): " << e.what() << '\n';

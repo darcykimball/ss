@@ -1,5 +1,5 @@
-#ifndef HTTP_SERVICE
-#define HTTP_SERVICE
+#ifndef HTTP_FN
+#define HTTP_FN
 
 
 #include <vector>
@@ -20,4 +20,4 @@ std::vector<uint8_t> http_fn(fetcher& fido, std::vector<uint8_t> raw_req);
 
 
 
-#endif // HTTP_SERVICE
+#endif // HTTP_FN

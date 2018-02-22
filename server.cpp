@@ -6,6 +6,8 @@
 #include <boost/filesystem.hpp>
 
 #include "connection_manager.hpp"
+#include "fetcher.hpp"
+#include "http_fn.hpp"
 #include "service.hpp"
 
 

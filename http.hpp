@@ -26,6 +26,22 @@ enum class status_code {
 };
 
 
+inline std::string print_code(status_code code) {
+  switch (code) {
+    case status_code::ok:
+      return "200 OK";
+    case status_code::forbidden:
+      return "403 Forbidden";
+    case status_code::not_found:
+      return "404 Not found";
+    case status_code::internal_server_error:
+      return "500 Internal server error";
+    default:
+      return "No code";
+  }
+}
+
+
 // Dumb type aliases for header types
 using header_type = std::string;
 using header_value = std::string;

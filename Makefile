@@ -1,5 +1,6 @@
 CXX = clang++-5.0
 CXXFLAGS = -Wall -std=c++17 -g
+LDFLAGS = -lboost_system -lboost_filesystem
 
 EXES = server client
 
@@ -7,11 +8,15 @@ EXES = server client
 all: $(EXES)
 
 
-server: server.cpp
-	$(CXX) $(CXXFLAGS) -o server -lpthread server.cpp
+server: server.cpp http_fn.o parser.o util.o fetcher.hpp
+	$(CXX) $(CXXFLAGS) -o server -lpthread server.cpp http_fn.o \
+					parser.o util.o $(LDFLAGS)
 
-client: client.cpp
-	$(CXX) $(CXXFLAGS) -o client client.cpp
+client: client.cpp util.o
+	$(CXX) $(CXXFLAGS) -o client client.cpp util.o $(LDFLAGS)
+
+util.o: util.cpp util.hpp
+	$(CXX) $(CXXFLAGS) -c util.cpp
 
 parser.o: parser.cpp parser.hpp	http.hpp
 	$(CXX) $(CXXFLAGS) -c parser.cpp

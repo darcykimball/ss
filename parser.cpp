@@ -52,7 +52,6 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
     if (line.length() == 0) {
       break;
     }
-    std::cout << "This is the line:" << line << '\n';
 
     // Split type and value
     auto split_pos = line.find(':');
