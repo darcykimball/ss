@@ -64,6 +64,11 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
       break;
     }
 
+    // Or if just an empty line was read
+    if (line.length() == 0) {
+      break;
+    }
+
     // Split type and value
     auto split_pos = line.find(':');
 

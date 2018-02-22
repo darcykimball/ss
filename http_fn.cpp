@@ -25,8 +25,17 @@ std::vector<uint8_t> http_fn(fetcher& fido, std::vector<uint8_t> raw_req) {
 
 
   // Parse the raw_req
-  auto req = parse_request(raw_req);
-  
+  request req;
+  try {
+    req = parse_request(raw_req);
+  } catch (parse_error const& e) {
+    std::cerr << e.what() << '\n';
+
+    // Send error 400
+    resp.code = status_code::bad_request;
+
+    return resp.as_bytes(nullptr);
+  }
 
   // Try to find the resource
   path file_path;

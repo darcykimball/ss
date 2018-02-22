@@ -45,9 +45,6 @@ std::string decode_uri(std::string const& uri) {
   std::string line;
   int decoded; 
   while (std::getline(iss, line, '%')) {
-    std::cerr << "Yo: line =" << line << '\n';
-
-
     if (iss) {
       std::string escaped;
       escaped.resize(2);
@@ -55,9 +52,6 @@ std::string decode_uri(std::string const& uri) {
 
 
       std::istringstream{escaped} >> std::hex >> decoded;
-
-      std::cout << "decoded =" << std::hex << decoded << '\n';
-
 
       retval += line;
       retval += static_cast<char>(decoded);

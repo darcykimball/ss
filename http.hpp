@@ -20,6 +20,7 @@ using namespace boost::filesystem;
 // Response codes
 enum class status_code {
   ok = 200,
+  bad_request = 400,
   forbidden = 403,
   not_found = 404,
   internal_server_error = 500
@@ -30,6 +31,8 @@ inline std::string print_code(status_code code) {
   switch (code) {
     case status_code::ok:
       return "200 OK";
+    case status_code::bad_request:
+      return "400 Bad request";
     case status_code::forbidden:
       return "403 Forbidden";
     case status_code::not_found:
