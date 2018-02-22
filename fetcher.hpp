@@ -6,6 +6,8 @@
 #include <iostream>
 #include <memory>
 
+#include <sys/stat.h>
+
 #include <boost/filesystem.hpp>
 
 #include "http.hpp"
@@ -67,13 +69,13 @@ public:
 
     try {
       // Check existence of resource
-      if (!exists(abs_path)) {
+      if (!exists(abs_path) || !is_regular_file(abs_path)) {
         throw fetch_error{status_code::not_found};
       } 
       
       // Check permissions
       // TODO/FIXME
-      if (!is_regular_file(abs_path)) {
+      if (!(status(abs_path).permissions() & S_IROTH)) {
         throw fetch_error{status_code::forbidden};
       }
 

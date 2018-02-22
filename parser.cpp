@@ -18,11 +18,14 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
   std::istringstream iss{s};
 
 
+  std::cerr << "The entire request:\n";
+  std::cerr << s << "\nEnd request\n";
+
+
   request req; // Return value
 
 
   // Parse request line
-  // TODO/FIXME: if empty uri, treat as index.html
   std::string line;
   if (std::getline(iss, line)) {
     auto tokens = util::tokenize(line);
@@ -36,9 +39,17 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
       throw parse_error{"Malformed req line"};
     }
 
+
     // Alright so far.
     req.type = request::method::GET;
-    req.uri = tokens[1];
+
+
+    // Use index.html as the default
+    if (req.uri == "/"s) {
+      req.uri = "index.html";
+    } else {
+      req.uri = util::decode_uri(tokens[1]);
+    }
 
   } else {
     // Can't be right.
@@ -48,8 +59,11 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
   
   // Parse headers
   while (std::getline(iss, line)) {
-    // If an empty line was read, assume it ends the header section
-    if (line.length() == 0) {
+    // FIXME: remove
+    std::cerr << "Trying to get header line:\n" << line << "\nendline\n";
+
+    // If a whitespace line was read, assume it ends the header section
+    if (line.find_first_not_of(" \t\n\v\f\r") != std::string::npos) {
       break;
     }
 
@@ -58,6 +72,8 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
 
     // Error if no colon-delimited pair found
     if (split_pos == std::string::npos) {
+      std::cerr << "parser: bad header line: " << line << '\n';
+
       throw parse_error{"Bad header"};
     }
 
