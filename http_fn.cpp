@@ -1,5 +1,9 @@
+#include <iomanip>
 #include <string>
+#include <sstream>
 #include <vector>
+
+#include <ctime>
 
 #include <boost/filesystem.hpp>
 
@@ -57,6 +61,14 @@ std::vector<uint8_t> http_fn(fetcher& fido, std::vector<uint8_t> raw_req) {
 
 
   resp.code = status_code::ok;
+
+  std::time_t time = std::time(nullptr);
+  std::ostringstream oss;
+  oss << std::put_time(std::gmtime(&time), "%c %Z");
+
+  resp.headers[content_date_key] = oss.str();
+
+
   resp.headers[content_type_key] = file_path.extension().string().substr(1);
   resp.headers[content_length_key] = std::to_string(resource.size());
 

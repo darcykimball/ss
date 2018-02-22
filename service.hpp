@@ -38,8 +38,6 @@ public:
     auto exception_future = exception_promise.get_future();
 
 
-    // TODO: check ref/move semantics for sanity
-    // TODO: exception handling!!!
     std::thread worker{
       [this, c{std::move(conn)}, p{std::move(exception_promise)}]() mutable {
         std::exception_ptr eptr;

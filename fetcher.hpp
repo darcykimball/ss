@@ -74,7 +74,6 @@ public:
       } 
       
       // Check permissions
-      // TODO/FIXME
       if (!(status(abs_path).permissions() & S_IROTH)) {
         throw fetch_error{status_code::forbidden};
       }
