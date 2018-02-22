@@ -45,7 +45,7 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
 
 
     // Use index.html as the default
-    if (req.uri == "/"s) {
+    if (tokens[1] == "/"s) {
       req.uri = "/index.html";
     } else {
       req.uri = util::decode_uri(tokens[1]);
