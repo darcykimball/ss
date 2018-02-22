@@ -18,8 +18,8 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
   std::istringstream iss{s};
 
 
-  std::cerr << "The entire request:\n";
-  std::cerr << s << "\nEnd request\n";
+  std::cout << "http::parse_request(): The entire request:\n";
+  std::cout << s << "\nhttp::parse_request(): End request\n";
 
 
   request req; // Return value
@@ -46,7 +46,7 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
 
     // Use index.html as the default
     if (req.uri == "/"s) {
-      req.uri = "index.html";
+      req.uri = "/index.html";
     } else {
       req.uri = util::decode_uri(tokens[1]);
     }
@@ -59,9 +59,6 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
   
   // Parse headers
   while (std::getline(iss, line)) {
-    // FIXME: remove
-    std::cerr << "Trying to get header line:\n" << line << "\nendline\n";
-
     // If a whitespace line was read, assume it ends the header section
     if (line.find_first_not_of(" \t\n\v\f\r") != std::string::npos) {
       break;
@@ -72,8 +69,6 @@ request parse_request(std::vector<uint8_t> const& raw_req) {
 
     // Error if no colon-delimited pair found
     if (split_pos == std::string::npos) {
-      std::cerr << "parser: bad header line: " << line << '\n';
-
       throw parse_error{"Bad header"};
     }
 
