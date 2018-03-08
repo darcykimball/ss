@@ -42,7 +42,7 @@ public:
       [this, c{std::move(conn)}, p{std::move(exception_promise)}]() mutable {
         std::exception_ptr eptr;
 
-        if constexpr (DEBUG) {
+        if (DEBUG) {
           std::cerr << "service::serve: worker started here.\n";
         }
 

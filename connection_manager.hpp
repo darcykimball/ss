@@ -69,7 +69,7 @@ public:
 
   // Start accepting connections and handling them one at a time
   void start() {
-    if constexpr (DEBUG) {
+    if (DEBUG) {
       std::cerr << "connection_manager::start()\n";
     }
 
@@ -115,6 +115,11 @@ public:
 
             // A no-op
             case std::future_status::deferred:
+              return false;
+
+            // XXX: Apparently c++14 mode isn't able to confirm that the above
+            // is total.
+            default:
               return false;
           }
         }
